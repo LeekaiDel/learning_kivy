@@ -24,6 +24,7 @@ class PaintApp(App):
         
         parent.add_widget(Button(text = "Clear", on_press = self.clear_canvas, size = (100, 50)))
         parent.add_widget(Button(text = "Save", pos = (100, 0), on_press = self.save, size = (100, 50)))
+        parent.add_widget(Button(text = "Screen", pos = (200, 0), on_press = self.screen, size = (100, 50)))
 
         return parent 
     
@@ -33,6 +34,9 @@ class PaintApp(App):
     def save(self, instance):
         self.painter.size = (Window.size[0], Window.size[1])
         self.painter.export_to_png('image.png')
+
+    def screen(self, instance):
+        Window.screenshot()
 
 if __name__ == "__main__":
     PaintApp().run()
