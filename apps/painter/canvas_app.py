@@ -11,7 +11,7 @@ class PainterWidget(Widget):
             rad = 30
             Ellipse(pos = (touch.x - rad / 2, touch.y - rad / 2), size = (rad, rad))
             touch.ud['line'] = Line(points = (touch.x, touch.y), width = 15)
-    
+
     def on_touch_move(self, touch):
         # print(touch.x, touch.y)
         touch.ud['line'].points += (touch.x, touch.y)
@@ -27,10 +27,10 @@ class PaintApp(App):
         parent.add_widget(Button(text = "Screen", pos = (200, 0), on_press = self.screen, size = (100, 50)))
 
         return parent 
-    
+
     def clear_canvas(self, instance):
         self.painter.canvas.clear()
-    
+
     def save(self, instance):
         self.painter.size = (Window.size[0], Window.size[1])
         self.painter.export_to_png('image.png')
