@@ -2,30 +2,38 @@ from tkinter import Widget
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
-from kivy_garden.mapview import MapView
+from kivy_garden.mapview import MapView, MapMarker, MapSource
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.graphics import (Color, Ellipse, Line)
+# from kivy_garden.mapview import 
 
+class MapLayer(MapView):
+    def __init__(self, **kwargs):
+        self.set_point = False
+        super(MapLayer, self).__init__(**kwargs)
 
-
-class MapSolid(MapView):
     def on_touch_down(self, touch):
-        with self.canvas:
-            Color(1, 0, 0, 1)
-            rad = 10
-            Ellipse(pos = (touch.x - rad / 2, touch.y - rad / 2), size = (rad, rad))
-            # touch.ud['line'] = Line(points = (touch.x, touch.y), width = 15)
-            print(self.get_latlon_at(touch.x - rad / 2, touch.y - rad / 2))
-            
+        if(self.set_point) and touch.button == 'left':
+            self.add_marker(marker = MapMarker(lon = self.get_latlon_at(touch.x, touch.y)[1], lat = self.get_latlon_at(touch.x, touch.y)[0]))
+        
+        if(touch.button == 'scrollup'):
+            if(self.zoom < self.map_source.get_max_zoom()):
+                self.zoom += 1
+        elif(touch.button == 'scrolldown'):
+            if(self.zoom > self.map_source.get_min_zoom()):
+                self.zoom -= 1
 
-
+    def on_touch_move(self, touch):     
+        self.center_on(self.get_latlon_at(float(self.center_x) - float(touch.dx), float(self.center_y) - float(touch.dy)))
+        
 
 class MapApp(App):
     def point_butt(self, instance):
         self.set_point = not self.set_point
+        self.map.set_point = self.set_point
         print("Point press " + str(self.set_point))
-    
+
 
     def home_butt(self, instance):
         print("Home press")
@@ -36,13 +44,15 @@ class MapApp(App):
 
 
     def clear_points_butt(self, instance):
+        # self.map.remove_marker()
         pass
+
 
     def build(self):
         self.set_point = False
 
-        self.map = MapSolid() #MapView(lat = 47.201738, lon = 38.934003, zoom = 18, size_hint = (0.8, 1))
-                
+        self.map = MapLayer(lat = 47.201738, lon = 38.934003, zoom = 18, double_tap_zoom = False) #MapView(lat = 47.201738, lon = 38.934003, zoom = 18, size_hint = (0.8, 1))
+        
         bl = BoxLayout()
 
         bl_buttons = BoxLayout(size_hint = (0.2, 1), orientation = 'vertical', spacing = 3)
