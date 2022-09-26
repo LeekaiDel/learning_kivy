@@ -6,13 +6,18 @@
     butt_clear: clear
     map_layer: map
     butt_bar: butt_bar
+    paint_layer: paint_layer
     
     MapView:
         id: map
         lat: 47.201738
         lon: 38.934003
         zoom: 15
-        # size: root.width, root.height
+        
+        Widget: 
+            id: paint_layer
+            size: (self.width, self.height)
+
 
     BoxLayout:
         id: butt_bar
